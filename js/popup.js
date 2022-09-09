@@ -49,7 +49,7 @@ overnight.addEventListener("click", async () =>{
 });
 
 settings.addEventListener("click", async () =>{
-    chrome.tabs.create({'url': "/options.html" });
+    chrome.tabs.create({'url': "../html/options.html" });
 });
 
 // The body of this function will be executed as a content script inside the
@@ -64,16 +64,16 @@ function autofiller(){
     console.log("start autofill");
     
     rfullName = document.getElementById("reporters_full_name");
-    rfullName.value = document.getElementById("user");
+
 
     rNumber = document.getElementById("reporters_phone_number");
-    rNumber.value = "1249356353";
+
 
     rEmail = document.getElementById("reporters_email_address");
-    rEmail.value = "reslife@uab.edu";
+
 
     rAddress = document.getElementById("reporters_physical_address");
-    rAddress.value = "1720 University Blvd";
+
 
     vType = document.getElementById("urgency");
     vType.value = "ONLY INVOLVES Residence Life Visitation Policy Violation"
@@ -174,12 +174,13 @@ function writeup(type){
         case "unattended":
             let specificLocation = document.getElementById("location_of_incident_specific").value.toLowerCase();
             let checkIn = prompt("Check In Time [12:00 AM/PM]");
-            let discoverName = prompt("Full name of RA who discovered violation")
+            let discoverName = prompt("Full name of RA who discovered violation");
             if (specificLocation != ""){
                 element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} in the ${specificLocation} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
             }else{
-                let location = prompt("Location that the violation was found").toLowerCase()
-                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} in the ${location} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
+                let location = prompt("Location that the violation was found");
+                document.getElementById("location_of_incident_specific").value = location;
+                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} in the ${location.toLowerCase()} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
             }
             break;
         case "overnight":

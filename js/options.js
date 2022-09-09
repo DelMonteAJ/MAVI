@@ -19,7 +19,7 @@ saveElem.addEventListener("click", ()=>{
 })
 function load(){
     chrome.storage.sync.get("hall", ({ hall }) => {
-        if (hall == ""){
+        if (hall == "" || hall == null){
             hallElem.value = "Blazer Hall";
         }else{
             hallElem.value = hall;
@@ -27,7 +27,7 @@ function load(){
     });
     
     chrome.storage.sync.get("name", ({ name }) => {
-        if (name == ""){
+        if (name == "" || name == null){
             nameElem.value = "Blaze the Dragon";
         }else{
             nameElem.value = name;
@@ -35,7 +35,7 @@ function load(){
     });
     
     chrome.storage.sync.get("email", ({ email }) => {
-        if (email == ""){
+        if (email == "" || email == null){
             emailElem.value = "blaze@uab.edu";
         }else{
             emailElem.value = email;
@@ -43,7 +43,7 @@ function load(){
     });
     
     chrome.storage.sync.get("phone", ({ phone }) => {
-        if (phone == ""){
+        if (phone == "" || phone == null){
             phoneElem.value = "1234567890";
         }else{
             phoneElem.value = phone;
