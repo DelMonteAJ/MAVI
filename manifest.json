@@ -2,14 +2,14 @@
     "manifest_version": 3,
     "name": "Visitation Automator",
     "version": "1.0.0.0",
-    
+    "options_page": "options.html",
     "commands": {
         "_execute_action": {
             "suggested_key": {
-                "default": "Ctrl+Shift+K",
-                "mac": "Command+Shift+K",
-                "chromeos": "Ctrl+Shift+K",
-                "linux": "Ctrl+Shift+K"
+                "default": "Ctrl+Shift+Comma",
+                "mac": "Command+Shift+Comma",
+                "chromeos": "Ctrl+Shift+Comma",
+                "linux": "Ctrl+Shift+Comma"
             }
         }
     },

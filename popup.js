@@ -2,6 +2,7 @@ let autofill = document.getElementById("button1");
 let improper = document.getElementById("button2");
 let unattended = document.getElementById("button3");
 let overnight = document.getElementById("button4");
+let settings = document.getElementById("settings");
 
 // chrome.storage.sync.get("color", ({ color }) => {
 //     changeColor.style.color = color;
@@ -47,6 +48,10 @@ overnight.addEventListener("click", async () =>{
     });
 });
 
+settings.addEventListener("click", async () =>{
+    chrome.tabs.create({'url': "/options.html" });
+});
+
 // The body of this function will be executed as a content script inside the
 // current page
 function setPageBackgroundColor() {
@@ -57,8 +62,9 @@ function setPageBackgroundColor() {
 
 function autofiller(){
     console.log("start autofill");
+    
     rfullName = document.getElementById("reporters_full_name");
-    rfullName.value = "Fullest Fulling Name";
+    rfullName.value = document.getElementById("user");
 
     rNumber = document.getElementById("reporters_phone_number");
     rNumber.value = "1249356353";
@@ -75,14 +81,72 @@ function autofiller(){
     vLocation = document.getElementById("location_of_incident");
     vLocation.value = "Gold Hall"
 
-    rTitle = document.getElementById("reporters_title");
-    rTitle.value = "RA " + vLocation.value;
+    chrome.storage.sync.get("hall", ({ hall }) => {
+        if (hall == ""){
+            vLocation.value = "Blazer Hall";
+        }else{
+            vLocation.value = hall;
+        }
+    });
 
-    if (vLocation.value == "Gold Hall"){
-        rAddress.value = "900 17th St S, Birmingham, AL 35205"
+    chrome.storage.sync.get("name", ({ name }) => {
+        if (name == ""){
+            rfullName.value = "Blaze the Dragon";
+        }else{
+            rfullName.value = name;
+        }
+    });
+
+    chrome.storage.sync.get("email", ({ email }) => {
+        if (email == ""){
+            rEmail.value = "blaze@uab.edu";
+        }else{
+            rEmail.value = email;
+        }
+    });
+
+    chrome.storage.sync.get("phone", ({ phone }) => {
+        if (phone == ""){
+            rNumber.value = "1234567890";
+        }else{
+            rNumber.value = phone;
+        }
+    });
+
+    rTitle = document.getElementById("reporters_title");
+    rTitle.value = vLocation.value + " Resident Assistant";
+
+    switch (vLocation.value){
+        case "Blazer Hall":
+            rAddress.value = "920 16th St S, Birmingham, AL 35205";
+            break;
+
+        case "Blount Hall":
+            rAddress.value = "1001 14th St S, Birmingham, AL 35205";
+            break;
+
+        case "Camp Hall":
+            rAddress.value = "1516 10th Ave S, Birmingham, AL 35205";
+            break;
+
+        case "Gold Hall":
+            rAddress.value = "900 17th St S, Birmingham, AL 35205"
+            break; 
+
+        case "McMahon Hall":
+            rAddress.value = "1600 10th Ave S, Birmingham, AL 35205";
+            break;
+
+        case "Rast Hall":
+            rAddress.value = "1530 11th Ave S, Birmingham, AL 35205";
+            break;
+
+        default:
+            rAddress.value = "1720 University Blvd, Birmingham, AL 35205";
     }
 
-    console.log("autofilled");
+
+    console.log("[AV] Autofill complete!");
 }
 
 function writeup(type){
@@ -102,21 +166,26 @@ function writeup(type){
     let nameArray = resName.split(" ");
     let resLastName = nameArray[nameArray.length-1];
     let roomNumber = hallArray[hallArray.length-1];
-    console.log(`${element.value} - ${type}`);
+    let guest = prompt("Guest Name");
     switch(type){
         case "improper":
-            element.value = `At approximately ${time} on ${date}, ${hall} resident, ${resName}, signed in guest, GUEST_NAME, to room ${roomNumber}. ${resLastName} did not sign out their guest. This constitutes an improper checkout violation.`
+            element.value = `At approximately ${time} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} did not sign out their guest. This constitutes an improper checkout violation.`
             break;
         case "unattended":
             let specificLocation = document.getElementById("location_of_incident_specific").value.toLowerCase();
+            let checkIn = prompt("Check In Time [12:00 AM/PM]");
+            let discoverName = prompt("Full name of RA who discovered violation")
             if (specificLocation != ""){
-                element.value = `At approximately CHECK_IN_TIME on ${date}, ${hall} resident, ${resName}, signed in guest, GUEST_NAME, to room ${roomNumber}. ${resLastName} was seen by RA DISCOVER_NAME in the ${specificLocation} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
+                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} in the ${specificLocation} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
             }else{
-                element.value = `At approximately CHECK_IN_TIME on ${date}, ${hall} resident, ${resName}, signed in guest, GUEST_NAME, to room ${roomNumber}. ${resLastName} was seen by RA DISCOVER_NAME in the LOCATION without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
+                let location = prompt("Location that the violation was found").toLowerCase()
+                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} in the ${location} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
             }
             break;
         case "overnight":
-            element.value = `At approximately CHECK_IN_DATE on CHECK_IN_DATE, ${hall} resident, ${resName}, signed in guest, GUEST_NAME, to room ${roomNumber}. ${resLastName} signed out their guest at ${time} on ${date} and did not have an overnight guest form on file. This constitutes an overnight guest violation.`
+            let checkInTime = prompt("Check In Time [12:00 AM/PM]");
+            let checkInDate = prompt("Check In Date [MM/DD/YYYY]");
+            element.value = `At approximately ${checkInTime} on ${checkInDate}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} signed out their guest at ${time} on ${date} and did not have an overnight guest form on file. This constitutes an overnight guest violation.`
             break;
         default:
             element.value = `Could not autocomplete.`
