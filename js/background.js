@@ -1,23 +1,16 @@
-let color = '#3aa757';
 
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.set({ color });
-    console.log("Following along with https://developer.chrome.com/docs/extensions/mv3/getstarted/");
+
+chrome.runtime.onInstalled.addListener(function (object) {
+    if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+        let internalUrl = chrome.runtime.getURL("html/options.html");
+        chrome.tabs.create({ url: internalUrl }, function (tab) {
+            
+        });
+    }
+    // console.log("Following along with https://developer.chrome.com/docs/extensions/mv3/getstarted/");
 });
 
 
-chrome.action.onClicked.addListener((tab) => {
-    chrome.scripting.executeScript({
-        target: {tabId: tab.id},
-        function: contentScriptFunc,
-        args: ['action'],
-    });
-});
-
-function contentScriptFunc(name) {
-    alert(`"${name}" executed`);
-}
-  
 // WORKS FOR SERVICE WORKER VIEW ON EXTENSIONS PAGE 
 // Could not think of a way to utilize this, so it is currently dead, reactivate the following code in manifest
 // "contentScriptFunc": {

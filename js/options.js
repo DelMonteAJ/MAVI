@@ -16,6 +16,7 @@ saveElem.addEventListener("click", ()=>{
     chrome.storage.sync.set({hall});
     console.log("Saved!");
     close();
+    alert("Configuration saved!");
 })
 function load(){
     chrome.storage.sync.get("hall", ({ hall }) => {

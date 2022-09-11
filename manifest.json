@@ -1,7 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Visitation Automator",
-    "version": "1.0.0.0",
+    "name": "MAVI",
+    "description": "Autofill support for Maxient visitation violations.",
+    "version": "1.0.0.1",
     "options_page": "html/options.html",
     "commands": {
         "_execute_action": {
@@ -15,7 +16,6 @@
     },
 
     "permissions": [
-        "contextMenus",
         "storage",
         "activeTab",
         "scripting",
