@@ -11,41 +11,53 @@ let settings = document.getElementById("settings");
 // When the button is clicked, inject setPageBackgroundColor into current page
 autofill.addEventListener("click", async () =>{
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
-
-    chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: autofiller,
-    });
+    if (tab.url.includes("cm.maxient.com/reportingform")){
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: autofiller,
+        });
+    }else{
+        alert("Maxient is not detected. Feature is only active when Maxient is currently on-screen.");
+    }
 });
 
 improper.addEventListener("click", async () =>{
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
-
-    chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: writeup,
-        args: ["improper"]
-    });
+    if (tab.url.includes("cm.maxient.com/reportingform")){
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: writeup,
+            args: ["improper"]
+        });
+    }else{
+        alert("Maxient is not detected. Feature is only active when Maxient is currently on-screen.");
+    }
 });
 
 unattended.addEventListener("click", async () =>{
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
-
-    chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: writeup,
-        args: ["unattended"]
-    });
+    if (tab.url.includes("cm.maxient.com/reportingform")){
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: writeup,
+            args: ["unattended"]
+        });
+    }else{
+        alert("Maxient is not detected. Feature is only active when Maxient is currently on-screen.");
+    }
 });
 
 overnight.addEventListener("click", async () =>{
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
-
-    chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: writeup,
-        args: ["overnight"]
-    });
+    if (tab.url.includes("cm.maxient.com/reportingform")){
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: writeup,
+            args: ["overnight"]
+        });
+    }else{
+        alert("Maxient is not detected. Feature is only active when Maxient is currently on-screen.");
+    }
 });
 
 settings.addEventListener("click", async () =>{
