@@ -176,11 +176,11 @@ function writeup(type){
             let checkIn = prompt("Check In Time [12:00 AM/PM]");
             let discoverName = prompt("Full name of RA who discovered violation");
             if (specificLocation != ""){
-                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} in the ${specificLocation} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
+                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} at the ${specificLocation} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
             }else{
                 let location = prompt("Location that the violation was found");
                 document.getElementById("location_of_incident_specific").value = location;
-                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} in the ${location.toLowerCase()} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
+                element.value = `At approximately ${checkIn} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} was seen by RA ${discoverName} at the ${location.toLowerCase()} without their guest at approximately ${time}. This constitutes an unescorted guest violation.`
             }
             break;
         case "overnight":
