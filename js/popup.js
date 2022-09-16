@@ -73,7 +73,7 @@ function setPageBackgroundColor() {
 }
 
 function autofiller(){
-    console.log("start autofill");
+    console.log("[MAVI] Start autofill");
     
     rfullName = document.getElementById("reporters_full_name");
 
@@ -158,7 +158,7 @@ function autofiller(){
     }
 
 
-    console.log("[AV] Autofill complete!");
+    console.log("[MAVI] Autofill complete!");
 }
 
 function writeup(type){
@@ -178,6 +178,10 @@ function writeup(type){
     let nameArray = resName.split(" ");
     let resLastName = nameArray[nameArray.length-1];
     let roomNumber = hallArray[hallArray.length-1];
+    let role = document.getElementById("role_0");
+    if (role.value == "" || role.value == null){
+        role.value = "Alleged (Student)";
+    }
     let guest = prompt("Guest Name");
     switch(type){
         case "improper":
