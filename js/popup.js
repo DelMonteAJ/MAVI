@@ -2,6 +2,7 @@ let autofill = document.getElementById("button1");
 let improper = document.getElementById("button2");
 let unattended = document.getElementById("button3");
 let overnight = document.getElementById("button4");
+let mercury = document.getElementById("button5");
 let settings = document.getElementById("settings");
 
 // chrome.storage.sync.get("color", ({ color }) => {
@@ -9,6 +10,10 @@ let settings = document.getElementById("settings");
 // });
 
 // When the button is clicked, inject setPageBackgroundColor into current page
+
+
+
+
 autofill.addEventListener("click", async () =>{
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
     if (tab.url.includes("cm.maxient.com/reportingform")){
@@ -64,6 +69,127 @@ settings.addEventListener("click", async () =>{
     chrome.tabs.create({'url': "../html/options.html" });
 });
 
+
+mercury.addEventListener("click", async () =>{
+
+    function findElementByCriteria(rootElement, attributeName, attributeValue) {
+        var elements = rootElement.querySelectorAll('*'); // Select all elements within the root
+
+        for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+            if (element.getAttribute(attributeName) === attributeValue) {
+                return element; // Return the first element that matches the criteria
+            }
+        }
+
+        return null; // Return null if no matching element is found
+    }
+
+    function findElementByClassName(rootElement, className) {
+        if (rootElement.classList && rootElement.classList.contains(className)) {
+            return rootElement; // Return the element if it has the desired class
+        }
+
+        var children = rootElement.children;
+        for (var i = 0; i < children.length; i++) {
+            var childResult = findElementByClassName(children[i], className);
+            if (childResult) {
+                return childResult; // If a child found the element, return it
+            }
+        }
+
+        return null; // Return null if no matching element is found
+    }
+
+    // var desiredClass = "targetClass";
+    // var desiredElement = findElementByClassName(document.body, desiredClass);
+
+    // if (desiredElement) {
+    //     console.log('Found the element with class', desiredClass, ':', desiredElement);
+    // } else {
+    //     console.log('Element with class', desiredClass, 'not found.');
+    // }
+
+    // var desiredInputElement = findElementByCriteria(document.getElementById('myForm'), 'name', 'username');
+    
+    // if (desiredInputElement) {
+    //     console.log('Found the desired input element:', desiredInputElement);
+    // } else {
+    //     console.log('Desired input element not found.');
+    // }
+
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
+    if (tab.url.includes("rmsapp.ad.uab.edu")){
+        // tab.
+        // const body = document.getElementsByTagName("body")[0]
+        // console.log(`Body: ${body}`)
+        // console.log(body)
+        // console.log(body.length);
+        // const elem = findElementByClassName(body, "pageTable")
+        // console.log(elem)
+        // for (const row of elem.children){
+        //     console.log(row);
+        // }
+        var url = chrome.runtime.getURL('images/MAVI.png');
+        console.log(url)
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: mercuryRebuild,
+            args: [url]
+        });
+    }else{
+        alert("Maxient is not detected. Feature is only active when Maxient is currently on-screen.");
+    }
+});
+
+function mercuryRebuild(url){
+    let index = 0
+    // let pencilArray = document.getElementsByClassName("BOSubLinkContainerStaticProcessGuestVisitAddEditXf3e7add93b564e2d9f9e853f1b7108df")
+    for (const row of document.getElementsByClassName("k-window-title")){
+        // for (const row of document.getElementsByTagName("tbody")[37].children){
+        const newElem = document.createElement('a')
+        console.log(row)
+        // newElem.href = "https://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham&layout_id=0&reporters_full_name=5"
+        newElem.target = "_blank";
+        newElem.value = index
+        newElem.onclick = function(){
+            let booking = document.getElementById("BAECRConferenceBookingDisplay").innerText
+            let building = ""
+            if (booking.includes("CH")){
+                building = "Camp Hall";
+            }else if (booking.includes("BZ")){
+                building = "Blazer Hall"
+            }else if (booking.includes("RH")){
+                building = "Rast Hall"
+            }else if (booking.includes("MM")){
+                building = "McMahon Hall"
+            }else if (booking.includes("GO")){
+                building = "Gold Hall"
+            }else if (booking.includes("BL")){
+                building = "Blount Hall"
+            }
+            
+            building += " " + document.getElementById("BAECRConferenceBookingDisplay").innerText.split(":")[0].substring(3)
+            let hostElem = document.getElementById("dlgGVInnerDialog").children[0].children[0].children[0].children[1].innerText
+            // link = `https://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham&layout_id=0&reporters_full_name=${hostElem.split(",")[0]}`
+            console.log(building.split(" ",2).join(" ").replace(" ", "%20"))
+            newElem.href = `https://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham&layout_id=0&location_of_incident_specific=${building.replace(" ", "%20")}&location_of_incident=${building.split(" ",2).join(" ").replace(" ", "%20")}&search_firstname=${hostElem.split(", ")[1].split(" ")[0]}&search_lastname=${hostElem.split(",")[0]}&search_housing_room_num=${parseInt(document.getElementById("BAECRConferenceBookingDisplay").innerText.split(":")[0].substring(3))}`
+            console.log(hostElem)
+            // chrome.tabs.create({ url: link, active: false });
+        }
+        image = document.createElement("img")
+
+        image.src = "https://github.com/DelMonteAJ/MAVI/blob/main/images/MAVI_clean_20x20.png?raw=true";
+        newElem.appendChild(image)
+        // row.children[0].children[0].children[0].appendChild(newElem)
+        row.appendChild(newElem);
+        index++;
+    }
+    // pencilArray[0].click()
+}
+
+
+
 // The body of this function will be executed as a content script inside the
 // current page
 function setPageBackgroundColor() {
@@ -72,9 +198,51 @@ function setPageBackgroundColor() {
     })
 }
 
+
 function autofiller(){
     console.log("[MAVI] Start autofill");
+    // setTimeout(async()=>console.log(
+    //     await parent.navigator.clipboard.readText()), 3000)
     
+    /*
+    string = "335	n	Janiyah Gross	Arielle Sillmon	uabcc	9/15/2022	0	9/15/2022	11:48 PM	NC	9/16/2022	12:08 AM	SB														"
+    array = string.split("\t")
+    for (i = 0; i < array.length; i++){
+        if (array[i] == "") {
+            continue;
+        }
+        switch (i){
+            case 0:
+                console.log(`Room number: ${array[i]}`);
+
+
+        }
+    }
+    */
+/*
+function excelExtract(rowNumber){
+    chrome.storage.sync.get("excel", ({ excel }) => {
+        if (excel){
+            excelStatus = true;
+            string = prompt("Insert Excel Row")//"335	n	Janiyah Gross	Arielle Sillmon	uabcc	9/15/2022	0	9/15/2022	11:48 PM	NC	9/16/2022	12:08 AM	SB"
+            array = string.split("\t")
+            console.log(`Room number: ${array[0]}`);
+            console.log(`Resident Name: ${array[2]}`);
+            console.log(`Guest Name: ${array[3]}`);
+            guest = array[3];
+            let checkInDate = array[7];
+            console.log(`Check In Date: ${array[7]}`);
+            let checkInTime = array[8];
+            console.log(`Check In Time: ${array[8]}`);
+            console.log(`Check Out Date: ${array[10]}`);
+            console.log(`Check Out Time: ${array[11]}`);
+
+    })
+}
+*/
+
+    var excelRow = "";
+    var getExcel = false;
     rfullName = document.getElementById("reporters_full_name");
 
 
@@ -106,6 +274,7 @@ function autofiller(){
             rfullName.value = "Blaze the Dragon";
         }else{
             rfullName.value = name;
+            // document.getElementById("search_firstname").value = "DS";
         }
     });
 
@@ -125,6 +294,11 @@ function autofiller(){
         }
     });
 
+    // chrome.storage.sync.get("excel", ({ excel }) =>{
+    //     console.log(excel);
+    // });
+
+    // grabExcel()
     rTitle = document.getElementById("reporters_title");
     rTitle.value = vLocation.value + " Resident Assistant";
 
@@ -186,6 +360,7 @@ function writeup(type){
     switch(type){
         case "improper":
             element.value = `At approximately ${time} on ${date}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} did not sign out their guest. This constitutes an improper checkout violation.`
+            document.getElementById("location_of_incident_specific").value = hall + " " + roomNumber;
             break;
         case "unattended":
             let specificLocation = document.getElementById("location_of_incident_specific").value.toLowerCase();
@@ -203,6 +378,7 @@ function writeup(type){
             let checkInTime = prompt("Check In Time [12:00 AM/PM]");
             let checkInDate = prompt("Check In Date [MM/DD/YYYY]");
             element.value = `At approximately ${checkInTime} on ${checkInDate}, ${hall} resident, ${resName}, signed in guest, ${guest}, to room ${roomNumber}. ${resLastName} signed out their guest at ${time} on ${date} and did not have an overnight guest form on file. This constitutes an overnight guest violation.`
+            document.getElementById("location_of_incident_specific").value = hall + " " + roomNumber;
             break;
         default:
             element.value = `Could not autocomplete.`

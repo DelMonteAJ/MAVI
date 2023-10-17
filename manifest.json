@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "MAVI",
     "description": "Autofill support for Maxient visitation violations.",
-    "version": "1.0.0.3",
+    "version": "2.0.0.1",
     "options_page": "html/options.html",
     "commands": {
         "_execute_action": {
@@ -16,10 +16,17 @@
     },
 
     "permissions": [
+        "webNavigation",
+        "tabs",
+        "clipboardRead",
         "storage",
         "activeTab",
-        "scripting",
-        "tabs"
+        "scripting"
+    ],
+
+    "host_permissions": [
+        "https://rmsapp.ad.uab.edu:4431/*",
+        "*://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham*"
     ],
 
     "background": {
