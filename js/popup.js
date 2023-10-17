@@ -152,31 +152,56 @@ function mercuryRebuild(url){
         // newElem.href = "https://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham&layout_id=0&reporters_full_name=5"
         newElem.target = "_blank";
         newElem.value = index
+        let booking = document.getElementById("BAECRConferenceBookingDisplay").innerText
+        let building = ""
+        if (booking.includes("CH")){
+            building = "Camp Hall";
+        }else if (booking.includes("BZ")){
+            building = "Blazer Hall"
+        }else if (booking.includes("RH")){
+            building = "Rast Hall"
+        }else if (booking.includes("MM")){
+            building = "McMahon Hall"
+        }else if (booking.includes("GO")){
+            building = "Gold Hall"
+        }else if (booking.includes("BL")){
+            building = "Blount Hall"
+        }
+        
+        let hostElem = document.getElementById("dlgGVInnerDialog").children[0].children[0].children[0].children[1].innerText
+        building += " " + document.getElementById("BAECRConferenceBookingDisplay").innerText.split(":")[0].substring(3)
+        let checkOutNote = "overnight"
+        // let checkOutNote = document.getElementById("txtdlgGVCheckOutNote").value
+
+        let checkOutDate = document.getElementById("dlgGVCheckOut").value.split(" ")[0]
+        let checkOutTime = (document.getElementById("dlgGVCheckOut").value.split(" ")[1] + " " + document.getElementById("dlgGVCheckOut").value.split(" ")[2]).replace(":","%3A").replace(" ", "%20")
+        let month = checkOutDate.split("/")[0]
+        let day = checkOutDate.split("/")[1]
+        let year = checkOutDate.split("/")[2]
+        let date = year+"%2D"+month+"%2D"+day
+        let template = ""
+        let name = hostElem.split(", ")[1].split(" ")[0] + " " + hostElem.split(",")[0]
+        if (checkOutNote.toLowerCase().includes("improper")) {
+            violationType = "improper"
+            console.log(violationType)
+        }else if(checkOutNote.toLowerCase().includes("overnight")){
+            // TODO: Finish templates for each type of situation
+            template = `At approximately ${checkOutTime} on ${date}, Gold Hall resident, ${name}, signed in guest, NAME, to room RESIDENTROOMNUMBER. Resident RESIDENTLASTNAME signed out their guest at TIME on DATE and did not have an overnight guest form on file. This constitutes an overnight guest violation.`.replace(" ", "%20").replace(",", "%2C")
+            violationType = "overnight"
+            console.log(violationType)
+        }else if(checkOutNote.toLowerCase().includes("unescorted")){
+            violationType = "unescorted"
+            console.log(violationType)
+        }
         newElem.onclick = function(){
-            let booking = document.getElementById("BAECRConferenceBookingDisplay").innerText
-            let building = ""
-            if (booking.includes("CH")){
-                building = "Camp Hall";
-            }else if (booking.includes("BZ")){
-                building = "Blazer Hall"
-            }else if (booking.includes("RH")){
-                building = "Rast Hall"
-            }else if (booking.includes("MM")){
-                building = "McMahon Hall"
-            }else if (booking.includes("GO")){
-                building = "Gold Hall"
-            }else if (booking.includes("BL")){
-                building = "Blount Hall"
-            }
-            
-            building += " " + document.getElementById("BAECRConferenceBookingDisplay").innerText.split(":")[0].substring(3)
-            let hostElem = document.getElementById("dlgGVInnerDialog").children[0].children[0].children[0].children[1].innerText
             // link = `https://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham&layout_id=0&reporters_full_name=${hostElem.split(",")[0]}`
             console.log(building.split(" ",2).join(" ").replace(" ", "%20"))
             newElem.href = `https://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham&layout_id=0&location_of_incident_specific=${building.replace(" ", "%20")}&location_of_incident=${building.split(" ",2).join(" ").replace(" ", "%20")}&search_firstname=${hostElem.split(", ")[1].split(" ")[0]}&search_lastname=${hostElem.split(",")[0]}&search_housing_room_num=${parseInt(document.getElementById("BAECRConferenceBookingDisplay").innerText.split(":")[0].substring(3))}`
             console.log(hostElem)
-            // chrome.tabs.create({ url: link, active: false });
         }
+        link = `https://cm.maxient.com/reportingform.php?UnivofAlabamaBirmingham&layout_id=0&location_of_incident_specific=${building.replace(" ", "%20")}&location_of_incident=${building.split(" ",2).join(" ").replace(" ", "%20")}&search_firstname=${hostElem.split(", ")[1].split(" ")[0]}&search_lastname=${hostElem.split(",")[0]}&search_housing_room_num=${parseInt(document.getElementById("BAECRConferenceBookingDisplay").innerText.split(":")[0].substring(3))}&date_of_incident=${date}&time_of_incident=${checkOutTime}&aq[1][answer]=${template}`
+        // chrome.tabs.create({ url: link, active: false });
+        chrome.runtime.sendMessage({ link });
         image = document.createElement("img")
 
         image.src = "https://github.com/DelMonteAJ/MAVI/blob/main/images/MAVI_clean_20x20.png?raw=true";
@@ -188,7 +213,15 @@ function mercuryRebuild(url){
     // pencilArray[0].click()
 }
 
-
+// Background or Popup Script
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.link) {
+      // Handle the result here
+      chrome.tabs.create({ url: message.link })
+      // You can do whatever you need with the result
+    }
+  });
+  
 
 // The body of this function will be executed as a content script inside the
 // current page
@@ -259,16 +292,18 @@ function excelExtract(rowNumber){
     vType.value = "ONLY INVOLVES Residence Life Visitation Policy Violation"
     
     vLocation = document.getElementById("location_of_incident");
-    vLocation.value = "Gold Hall"
+    // vLocation.value = "Gold Hall"
 
-    chrome.storage.sync.get("hall", ({ hall }) => {
-        if (hall == ""){
-            vLocation.value = "Blazer Hall";
-        }else{
-            vLocation.value = hall;
-        }
-    });
+    // chrome.storage.sync.get("hall", ({ hall }) => {
+    //     if (hall == ""){
+    //         vLocation.value = "Blazer Hall";
+    //     }else{
+    //         vLocation.value = hall;
+    //     }
+    // });
 
+    vLocation.value = document.getElementById("location_of_incident_specific").value.split(" ",2).join(" ")
+    console.log(vLocation)
     chrome.storage.sync.get("name", ({ name }) => {
         if (name == ""){
             rfullName.value = "Blaze the Dragon";
