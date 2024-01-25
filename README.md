@@ -11,7 +11,7 @@
 6. ### (Optional) Turn off Developer Mode -->
    
 ## Installation ("Load Unpacked" Method)
-1. ### Download the latest zip of [MAVI](https://github.com/DelMonteAJ/MAVI/releases/download/v2.1/MAVI.zip)
+1. ### Download the latest zip of [MAVI](https://github.com/DelMonteAJ/MAVI/releases/tag/v2.1)
 2. ### Extract the contents of the MAVI zip file into a folder
 3. ### Go to the extension page in Chrome 
 > Link to extension page: [chrome://extensions](chrome://extensions)
