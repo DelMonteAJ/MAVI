@@ -4,6 +4,7 @@ let autofill = document.getElementById("button1");
 // let overnight = document.getElementById("button4");
 let mercury = document.getElementById("button5");
 let settings = document.getElementById("settings");
+let scan = document.getElementById("button6");
 
 // chrome.storage.sync.get("color", ({ color }) => {
 //     changeColor.style.color = color;
@@ -72,20 +73,100 @@ settings.addEventListener("click", async () =>{
 });
 
 
-mercury.addEventListener("click", async () =>{
+scan.addEventListener("click", async () =>{
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
     if (tab.url.includes("rmsapp.ad.uab.edu")){
         var url = chrome.runtime.getURL('images/MAVI.png');
         console.log(url)
         chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            func: mercuryRebuild,
-            args: [url]
+            func: scanner
         });
     }else{
         alert("Mercury is not detected. Feature is only active when Mercury is currently on-screen.");
     }
 });
+
+mercury.addEventListener("click", async () => {
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
+    if (tab.url.includes("rmsapp.ad.uab.edu")){
+        var url = chrome.runtime.getURL('images/MAVI.png');
+        console.log(url)
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: mercuryRebuild
+        });
+    }else{
+        alert("Mercury is not detected. Feature is only active when Mercury is currently on-screen.");
+    }
+})
+
+function scanner(){
+    let rows = document.getElementsByClassName('userParentRow')
+    console.log(`Iterating through ${rows.length} rows`)
+
+    function countHoursBetweenMidnightAnd8AM(startDate, endDate) {
+        // Convert dates to milliseconds
+        var start = startDate.getTime();
+        var end = endDate.getTime();
+        
+        // Calculate the time difference in milliseconds
+        var timeDiff = Math.abs(end - start);
+        
+        // Convert time difference to hours
+        var hoursDiff = timeDiff / (1000 * 3600); // 1 hour = 1000 milliseconds * 60 seconds * 60 minutes
+        
+        // Initialize count for hours between midnight and 8 AM
+        var count = 0;
+        
+        // Iterate over each hour and count the ones between midnight and 8 AM
+        for (var i = start; i < end; i += 3600 * 1000) {
+            var hour = new Date(i).getHours();
+            if (hour >= 0 && hour < 8) {
+                var nextHour = i + 3600 * 1000;
+                var hourDiff = Math.min((nextHour - i) / (3600 * 1000), (end - i) / (3600 * 1000));
+                count += hourDiff;
+            }
+        }
+        
+        return count;
+    }
+    var count = 0;
+    for (var row of rows){
+        var startDate = new Date(row.children[7].innerText);
+        var endDate = new Date(row.children[9].innerText);
+        var note = row.children[10].innerText;
+        if (countHoursBetweenMidnightAnd8AM(startDate, endDate) > 5 && row.children[8].innerText == "No"){
+            console.log(`Date Start: ${startDate}`)
+            console.log(`Date End: ${endDate}`)
+            row.bgColor = 'Orange'
+            row.style = ""
+            count++
+        }else if (note.toLowerCase().includes("improper")){
+            row.bgColor = 'Orange'
+            row.style = ""
+            count++
+        }
+        else if (note.toLowerCase().includes("unescorted")){
+            row.bgColor = 'Orange'
+            row.style = ""
+            count++
+        }
+
+        if (note.toLowerCase().includes("filed")){
+            row.bgColor = 'Lime'
+            row.style = ""
+            count--
+            
+        }
+    }
+    if (count > 0){
+        alert(count > 1 ? `There are ${count} violations.` : `There is only 1 violation.`)
+    }else{
+        alert("There are no violations.")
+    }
+
+}
 
 function mercuryRebuild(url){
 

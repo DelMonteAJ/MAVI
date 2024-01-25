@@ -12,9 +12,10 @@ chrome.runtime.onInstalled.addListener(function (object) {
 
 chrome.tabs.onCreated.addListener(function (tab) {
     // Check if the tab is fully loaded (you can adjust this condition as needed)
-    // if (!tab.url.includes("maxient")){
-    //   return
-    // }
+
+    if (tab && tab.pendingUrl && !tab.pendingUrl.includes("maxient")){
+      return
+    }
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       function: () => {
