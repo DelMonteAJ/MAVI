@@ -11,14 +11,14 @@
 6. ### (Optional) Turn off Developer Mode -->
    
 ## Installation ("Load Unpacked" Method)
-1. ### Download the latest zip of [MAVI](https://github.com/DelMonteAJ/MAVI/releases/download/v1.0.0.3/MAVI.zip)
+1. ### Download the latest zip of [MAVI](https://github.com/DelMonteAJ/MAVI/releases/download/v2.1/MAVI.zip)
 2. ### Extract the contents of the MAVI zip file into a folder
 3. ### Go to the extension page in Chrome 
 > Link to extension page: [chrome://extensions](chrome://extensions)
-4. ### Turn on Developer Mode
-5. ### Select the "Load unpacked" option
-6. ### Select the folder with MAVI's contents
-7. ### (Optional) Turn off Developer Mode
+1. ### Turn on Developer Mode
+2. ### Select the "Load unpacked" option
+3. ### Select the folder with MAVI's contents
+4. ### (Optional) Turn off Developer Mode
 ---
 ## How to Use MAVI
 
@@ -27,6 +27,9 @@
 - ### To go to the Maxient page or use MAVI's autofill features, select MAVI's icon in the extensions list, or use your system's shortcut (Ctrl+Shift+Comma for Windows/Other, Command+Shift+Comma for Mac) to display MAVI.
 > Autofill features are only available when on the Maxient page.
 
+- ### Violation Scan - Highlights pending and completed violations
+- ### Mercury Fill - Transfers selected check in data to Maxient
+- ### Autofills - Fills all RA data into the needed fields on Maxient
 
 ---
 ## *Potential Upcoming Features*
